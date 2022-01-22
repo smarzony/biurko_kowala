@@ -43,6 +43,7 @@ const char *password = STAPSK;
 // UltraSonicDistanceSensor distanceSensor(TRIGGER_PIN, ECHO_PIN, 400.0, 2000);
 // UltraSonicDistanceSensor distanceSensor(TRIGGER_PIN, ECHO_PIN);
 AccelStepper stepper(AccelStepper::DRIVER, PULSE_PIN, DIR_PIN);
+int16_t motor_speed;
 
 // unsigned long long now, last_dist_measure;
 // float distance[CIRC_BUFFER_SIZE];
@@ -94,11 +95,14 @@ void loop()
     //     Serial.print(distance_avg);
     //     Serial.println(" cm");
     // }
+
+    motor_speed = map(analogRead(5), 0, 1023, 100, 800);
     // if (!digitalRead(BTN_UP) && distance_avg < 50.0)
     if (!digitalRead(BTN_UP) &&  digitalRead(LIMIT_UP))
     {
         digitalWrite(ENABLE_PIN, MOTOR_ENABLED);
-        stepper.setSpeed(MOTOR_SPEED);
+        // stepper.setSpeed(MOTOR_SPEED);
+        stepper.setSpeed(motor_speed);
         stepper.runSpeed();
         // stepper.run();
         digitalWrite(LED, HIGH);
@@ -108,7 +112,8 @@ void loop()
     else if (!digitalRead(BTN_DN) && digitalRead(LIMIT_DOWN))
     {
         digitalWrite(ENABLE_PIN, MOTOR_ENABLED);
-        stepper.setSpeed(-MOTOR_SPEED);
+        // stepper.setSpeed(-MOTOR_SPEED);
+        stepper.setSpeed(-motor_speed);
         stepper.runSpeed();
         digitalWrite(LED, HIGH);
         Serial.println("BWD");
